@@ -1,6 +1,5 @@
 // axios is used to made http request from the browser to a particular url
 import axios from "axios";
-
 import React, { useState, useEffect } from "react";
 // just bringing out the article component here
 import Article from "./Article.js";
@@ -33,6 +32,7 @@ const Feed = (props) => {
           key={article._id}
           question={article._id}
           user={article.user}
+          isAdmin = {false}
           title={article.title}
           questionBody={article.questionBody}
           tags={article.tags}

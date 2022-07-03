@@ -11,7 +11,7 @@ import Answer from "./Answer";
 const Article = (props) => {
 
   // destructuring 
-  const { key, question, user, title, questionBody, tags, votes, deleteQuestion, setDeleteQuestion, setIsShowSignup } = props
+  const { key, question, user, title, questionBody, tags, votes, deleteQuestion, setDeleteQuestion, setIsShowSignup,isAdmin } = props
 
   const host = "http://localhost:5000"
 
@@ -74,7 +74,24 @@ const Article = (props) => {
         setIsShowSignup(true);
       });
   };
-
+  const accessHandler = async (userAction)=>{
+    const questionsTOAccept = question;
+    await axios
+          .post(`${host}/api/questions/${questionsTOAccept}/accept`,
+          {
+            actionTaken: userAction.target.className,
+          },
+          {
+            headers: { "x-auth-token": token },
+          }
+          )
+          .then((res)=>{
+            
+          })
+          .catch(err=>{
+            
+          })
+  }
   useEffect(() => {
     async function getAnswersHandler() {
       const answers = await axios.get(
@@ -134,18 +151,30 @@ const Article = (props) => {
                 Delete
               </button>
             ) : null}
+            {
+              !isAdmin 
+              ?
+              (
+                <div className="votes">
+                  <button className="upvote-btn" onClick={VoteHandler}>
+                    <img alt="upvote" className="upvote" src={upArrow}></img>
+                  </button>
 
-            <div className="votes">
-              <button className="upvote-btn" onClick={VoteHandler}>
-                <img alt="upvote" className="upvote" src={upArrow}></img>
-              </button>
+                  <button className="downvote-btn" onClick={VoteHandler}>
+                    <img alt="downvote" className="downvote" src={downArrow}></img>
+                  </button>
 
-              <button className="downvote-btn" onClick={VoteHandler}>
-                <img alt="downvote" className="downvote" src={downArrow}></img>
-              </button>
-
-              <h3 className="counter">{currentVotes}</h3>
-            </div>
+                  <h3 className="counter">{currentVotes}</h3>
+                </div>
+              ) 
+              :
+              (
+                  <div className="accept-post">
+                     <button className="accept-btn" onClick={accessHandler}/>
+                    <button className="deny-btn" onClick={accessHandler}/>
+                  </div> 
+              )
+            }
           </div>
         </div>
 

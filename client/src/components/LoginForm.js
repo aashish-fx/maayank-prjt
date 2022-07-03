@@ -7,11 +7,12 @@ import "../styles/LoginForm.css";
 const LoginForm = (props) => {
 
   // destructing properties and functions
-  const { isShowLogin, setIsShowLogin, setIsLoggedIn } = props;
+  const { isShowLogin, setIsShowLogin, setIsLoggedIn,setIsAdmin } = props;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginAnimation, setLoginAnimation] = useState(0);
+  
 
 
   const handleLogin = async () => {
@@ -26,15 +27,18 @@ const LoginForm = (props) => {
         window.sessionStorage.setItem("userId", res.data.userId);
         window.sessionStorage.setItem("email", email);
         window.sessionStorage.setItem("name", res.data.name);
-        
+        if(email==='19ucs151@lmniit.ac.in' && password==='Mayank@41msj')
+        {
+          setIsAdmin(true);
+        }
         setIsLoggedIn(true);
         setLoginAnimation(1);
         setTimeout(() => {
           setLoginAnimation(0);
           setIsShowLogin(false);
         }, 1500);
-      })
-      .catch(() => {
+    })
+    .catch(() => {
         setLoginAnimation(2);
         setTimeout(() => {
           setLoginAnimation(0);

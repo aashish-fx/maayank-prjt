@@ -16,6 +16,7 @@ function App() {
   const [isShowSignup, setIsShowSignup] = useState(false);
   const [newQuestion, setNewQuestion] = useState(false);
   const [articles, setArticles] = useState([]);
+  const [isAdmin,setIsAdmin] = useState(false);
 
   // whenever auth token is there saved in the browser so automaticlly isLoggedIn become true or false
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -77,7 +78,7 @@ function App() {
       // passing all things as props in LoginForm component
         isShowLogin={isShowLogin}
         // isShowLogin has a boolean value (be it true or false)
-
+        setIsAdmin = {setIsAdmin}
         setIsShowLogin={setIsShowLogin}
         setIsLoggedIn={setIsLoggedIn}
       />

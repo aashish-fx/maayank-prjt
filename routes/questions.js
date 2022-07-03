@@ -16,7 +16,7 @@ const _ = require("lodash");
 router.get("/", async (req, res) => {
 
   try {
-    const questions = await Question.find().sort("createdAt");
+    const questions = await Question.find({verifiedByAdmin:true}).sort("createdAt");
     // recent added questions should be at the top
     questions.reverse();
     res.send(questions);
@@ -27,6 +27,18 @@ router.get("/", async (req, res) => {
   }
 
 });
+
+router.get('/toVerify',async (req,res)=>{
+  try{
+    const questions = await questions.find({verifiedByAdmin:false}).sort("createdAt");
+    questions.reverse();
+    res.send(questions);
+  }
+  catch(err){
+    console.error(error.message);
+    res.status(500).send("some error occured");
+  }
+})
 
 // route 2 -> adding a new question (/api/questions) -> authentication is required
 router.post("/", auth, async (req, res) => {
@@ -191,4 +203,35 @@ router.post("/:quesid/action", auth, async (req, res, next) => {
   }
 });
 
+
+router.post("/:quesid/accept", auth, async (req, res, next) => {
+
+  try {
+    const actionOnButton = req.body.actionTaken;
+    
+    if(actionOnButton === "accept-btn")
+    {
+      let question = await Question.findById(req.params.quesid).catch((error) =>
+        console.log(error)
+      );
+      if (!question)
+      return res.status(404).send("The question with the given Id doesnt exist..");
+      question.vereifiedByAdmin = true;
+      question = await question.save().catch((error) => console.log(error));
+      res.send(question);
+
+    }
+    else{
+      const question = await Question.findByIdAndRemove(req.params.quesid);
+      // taking out the question having that particular id
+      if (!question)
+        return res.status(404).send("The question with the given Id doesnt exist");
+      res.send(question);
+    }
+
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("some error occured");
+  }
+});
 module.exports = router;
